@@ -1,10 +1,10 @@
 <?php 
 /*
-Plugin Name: ConvertKit Wordpress
+Plugin Name: ConvertKit
 Plugin URI: https://convertkit.com
-Description: Plugin for embeding ConvertKit forms
+Description: Embed ConvertKit email forms at the end of your posts.
 Author: ConvertKit
-Version: 1.0
+Version: 0.1
 Author URI: https://convertkit.com
 */
 
@@ -52,8 +52,8 @@ function convertkit_sample_metaboxes( $meta_boxes ) {
 			'show_names' => true, // Show field names on the left
 			'fields' => array(
 				array(
-					'name'    => 'Form',
-					'desc'    => 'Choose a form for ConvertKit',
+					'name'    => 'Select a form:',
+					'desc'    => '"Default" will use the form specified in your settings page. "None" will not use a form on this page. Any option chosen will override choices made elsewhere in the ConvertKit plugin. To make a change to your form <a href="https://converkit.com">sign in to ConvertKit</a>.',
 					'id'      => $prefix . 'convertkit_form',
 					'type'    => 'select',
 					'options' => $landingPages

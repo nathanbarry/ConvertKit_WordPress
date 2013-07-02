@@ -40,11 +40,19 @@
 
 <div class="wrap">
 	<form name="convertkit_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
-		<input type="hidden" name="convertkit_hidden" value="Y">
-		<h1>Configuration</h1>
-		<p><?php _e("API Key: " ); ?><input type="text" name="convertkit_api_key" value="<?php echo $api_key; ?>" size="20"></p>
+		<input type="hidden" name="convertkit_hidden" value="Y" />
+		<h1>ConvertKit Settings</h1>
+		<p>Using your ConvertKit API key you can connect this WordPress blog to ConvertKit. To get the key <a href="https://convertkit.com">sign in to ConvertKit</a> and visit the Account tab.</p>
+		
+		<p>Then copy and paste the key into the box below.</p>
+		<p><strong><?php _e("API Key: " ); ?></strong></p>
+		
+		<p><input type="text" name="convertkit_api_key" value="<?php echo $api_key; ?>" size="20"></p>
 		<?php if($api_key != "" && $api_key) { ?> 
-			<p><?php _e("Default Form: "); ?>
+			<h2>Default Form</h2>
+			<p>The default form will be displayed on all your posts. It can be overridden on any individual post or page.</p> 
+			<p>You can either set each post to "none" or two a new form specific to that post.</p>
+			<p><strong><?php _e("Default Form: "); ?></strong></p>
 				<select name="convertkit_default_form">
 					<option value="-1">None</option>
 					<?php if ($data) {
@@ -61,7 +69,9 @@
 		
 
 		<p class="submit">
-		<input type="submit" name="Submit" value="<?php _e('Update Options', 'convertkit_trdom' ) ?>" />
+		<input type="submit" name="Submit" value="<?php _e('Save Settings', 'convertkit_trdom' ) ?>" />
 		</p>
 	</form>
+	
+	<p><em>If you have questions or problems please contact <a href="mailto:support@converkit.com">support@convertkit.com</a>.</em></p>
 </div>
