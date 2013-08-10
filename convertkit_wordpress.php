@@ -4,7 +4,7 @@ Plugin Name: ConvertKit
 Plugin URI: https://convertkit.com
 Description: Embed ConvertKit email forms at the end of your posts.
 Author: ConvertKit
-Version: 0.1
+Version: 0.11
 Author URI: https://convertkit.com
 */
 
@@ -12,14 +12,8 @@ Author URI: https://convertkit.com
 
 /* gets the data from a URL */
 function get_data($url) {
-	$ch = curl_init();
-	$timeout = 5;
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-	$data = curl_exec($ch);
-	curl_close($ch);
-	return $data;
+
+	return wp_remote_get($url);
 }
 
 //************ Meta Boxes ************
@@ -32,8 +26,8 @@ function convertkit_initialize_cmb_meta_boxes() {
 function convertkit_sample_metaboxes( $meta_boxes ) {
 	if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
 		$prefix = '_convertkit_'; // Prefix for all fields
-		$json = get_data("https://convertkit.com/app/api/v1/forms.json?api_key=" . get_option('convertkit_api_key'));
-		$data = json_decode($json);
+		$dataOrig = get_data('https://convertkit.com/app/api/v1/forms.json?api_key=' . get_option('convertkit_api_key'));
+		$data = json_decode($dataOrig["body"]);
 
 		$landingPages = array(array('name' => "Default", 'value' => 0), array('name' => "None", 'value' => -1));
 		if ($data) {
@@ -89,8 +83,7 @@ function convertkit_form($form_id) {
 		return "";
 	}
 	if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
-		$json = get_data("https://convertkit.com/app/api/v1/forms/" . $form_id . "/info.json?api_key=" . get_option('convertkit_api_key'));
-		$data = json_decode($json);
+		$data = get_data("https://convertkit.com/app/api/v1/forms/" . $form_id . "/info.json?api_key=" . get_option('convertkit_api_key'));
 		if ($data) {
 			return generateFormHTML($data, $form_id);
 		} else {

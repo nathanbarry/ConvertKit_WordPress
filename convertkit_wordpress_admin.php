@@ -33,8 +33,11 @@
 		$api_key = get_option('convertkit_api_key');
 	}
 	if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
-		$json = get_data("https://convertkit.com/app/api/v1/forms.json?api_key=" . get_option('convertkit_api_key'));
-		$data = json_decode($json);
+		$dataOrig = get_data("https://convertkit.com/app/api/v1/forms.json?api_key=" . get_option('convertkit_api_key'));
+		$data = json_decode($dataOrig["body"]);
+		if ($data->error != null) {
+		  echo "<div class=\"updated\"><p><strong>" . $data->error->message . "</strong></p></div>";
+		}
 	}
 ?>
 
@@ -46,9 +49,9 @@
 		
 		<p>Then copy and paste the key into the box below.</p>
 		<p><strong><?php _e("API Key: " ); ?></strong></p>
-		
+				
 		<p><input type="text" name="convertkit_api_key" value="<?php echo $api_key; ?>" size="20"></p>
-		<?php if($api_key != "" && $api_key) { ?> 
+		<?php if($api_key != "" && $api_key && $data->error == null) { ?> 
 			<h2>Default Form</h2>
 			<p>The default form will be displayed on all your posts. It can be overridden on any individual post or page.</p> 
 			<p>You can either set each post to "none" or two a new form specific to that post.</p>
