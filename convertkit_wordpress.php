@@ -12,7 +12,6 @@ Author URI: https://convertkit.com
 
 /* gets the data from a URL */
 function get_data($url) {
-
 	return wp_remote_get($url);
 }
 
@@ -83,7 +82,8 @@ function convertkit_form($form_id) {
 		return "";
 	}
 	if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
-		$data = get_data("https://convertkit.com/app/api/v1/forms/" . $form_id . "/info.json?api_key=" . get_option('convertkit_api_key'));
+		$dataOrig = get_data("https://convertkit.com/app/api/v1/forms/" . $form_id . "/info.json?api_key=" . get_option('convertkit_api_key'));
+		$data = json_decode($dataOrig["body"]);
 		if ($data) {
 			return generateFormHTML($data, $form_id);
 		} else {
