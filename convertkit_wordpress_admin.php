@@ -34,10 +34,12 @@
 	}
 	if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
 		$dataOrig = get_data("https://convertkit.com/app/api/v1/forms.json?api_key=" . get_option('convertkit_api_key'));
-		$data = json_decode($dataOrig["body"]);
-		if ($data->error != null) {
-		  echo "<div class=\"updated\"><p><strong>" . $data->error->message . "</strong></p></div>";
-		}
+		if ($dataOrig->errors["http_request_failed"] == null) {
+  		$data = json_decode($dataOrig["body"]);
+  		if ($data->error != null) {
+  		  echo "<div class=\"updated\"><p><strong>" . $data->error->message . "</strong></p></div>";
+  		}
+    }
 	}
 ?>
 

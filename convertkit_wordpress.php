@@ -12,7 +12,16 @@ Author URI: https://convertkit.com
 
 /* gets the data from a URL */
 function get_data($url) {
-	return wp_remote_get($url);
+	return wp_remote_get($url, array('sslverify' => false));
+}
+
+//************ Pages ************
+function convertkit_page_template($page_template)
+{
+    if ( is_page( 'my-custom-page-slug' ) ) {
+        $page_template = dirname( __FILE__ ) . '/convertkit_page_template.php';
+    }
+    return $page_template;
 }
 
 //************ Meta Boxes ************
@@ -26,35 +35,37 @@ function convertkit_sample_metaboxes( $meta_boxes ) {
 	if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
 		$prefix = '_convertkit_'; // Prefix for all fields
 		$dataOrig = get_data('https://convertkit.com/app/api/v1/forms.json?api_key=' . get_option('convertkit_api_key'));
-		$data = json_decode($dataOrig["body"]);
+		if ($dataOrig->errors["http_request_failed"] == null) {
+		  $data = json_decode($dataOrig["body"]);
 
-		$landingPages = array(array('name' => "Default", 'value' => 0), array('name' => "None", 'value' => -1));
-		if ($data) {
-  		foreach ($data as $lp) {
-  			array_push($landingPages, array('name' => $lp->landing_page->name, 'value' => $lp->landing_page->id));
+  		$landingPages = array(array('name' => "Default", 'value' => 0), array('name' => "None", 'value' => -1));
+  		if ($data) {
+    		foreach ($data as $lp) {
+    			array_push($landingPages, array('name' => $lp->landing_page->name, 'value' => $lp->landing_page->id));
+    		}
   		}
-		}
 		// $landingPages = array(array('name' => 'Designing Web Apps', 'value' => '1'), array( 'name' => 'Designing Mobile Apps', 'value' => '2', 'selected' => "t"));
 
-		$meta_boxes[] = array(
-			'id' => 'convertkit_meta',
-			'title' => 'ConvertKit',
-			'pages' => array('post'), // post type
-			'context' => 'normal',
-			'priority' => 'high',
-			'show_names' => true, // Show field names on the left
-			'fields' => array(
-				array(
-					'name'    => 'Select a form:',
-					'desc'    => '"Default" will use the form specified in your settings page. "None" will not use a form on this page. Any option chosen will override choices made elsewhere in the ConvertKit plugin. To make a change to your form <a href="https://converkit.com">sign in to ConvertKit</a>.',
-					'id'      => $prefix . 'convertkit_form',
-					'type'    => 'select',
-					'options' => $landingPages
-				),
-			),
-		);
+		  $meta_boxes[] = array(
+  			'id' => 'convertkit_meta',
+  			'title' => 'ConvertKit',
+  			'pages' => array('post'), // post type
+  			'context' => 'normal',
+  			'priority' => 'high',
+  			'show_names' => true, // Show field names on the left
+  			'fields' => array(
+  				array(
+  					'name'    => 'Select a form:',
+  					'desc'    => '"Default" will use the form specified in your settings page. "None" will not use a form on this page. Any option chosen will override choices made elsewhere in the ConvertKit plugin. To make a change to your form <a href="https://converkit.com">sign in to ConvertKit</a>.',
+  					'id'      => $prefix . 'convertkit_form',
+  					'type'    => 'select',
+  					'options' => $landingPages
+  				),
+  			),
+  		);
 
-		return $meta_boxes;
+  		return $meta_boxes;
+	  }
 	}
 }
 
@@ -107,9 +118,11 @@ function convertkit_admin_actions() {
     add_options_page("ConvertKit", "ConvertKit", 1, "ConvertKit", "convertkit_admin");
 }
 
+//*************** Filters/Shortcodes ***************
 add_action('admin_menu', 'convertkit_admin_actions');
 add_action( 'init', 'convertkit_initialize_cmb_meta_boxes', 9999 );
 add_filter('the_content', 'convertkit_bottom_of_post');
+add_filter( 'page_template', 'convertkit_page_template' );
 if (get_option('convertkit_api_key') && get_option('convertkit_api_key') != "") {
 	add_filter( 'cmb_meta_boxes', 'convertkit_sample_metaboxes' );
 }

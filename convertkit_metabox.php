@@ -35,8 +35,10 @@ Version: 		0.9.2
 
 $meta_boxes = array();
 $meta_boxes = apply_filters ( 'cmb_meta_boxes' , $meta_boxes );
-foreach ( $meta_boxes as $meta_box ) {
-	$my_box = new cmb_Meta_Box( $meta_box );
+if ($meta_boxes != null) {
+  foreach ( $meta_boxes as $meta_box ) {
+  	$my_box = new cmb_Meta_Box( $meta_box );
+  }
 }
 
 /**
