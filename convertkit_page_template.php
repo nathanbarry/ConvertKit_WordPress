@@ -13,7 +13,7 @@ if (get_post_meta($post->ID, "_convertkit_convertkit_form", true) == 0 || !get_p
 if ($dataOrig->errors["http_request_failed"] == null) {
   $data = json_decode($dataOrig["body"]);
 ?>
-  <iframe src="https://convertkit.com/<?php echo $data->accessPath ?>" style="width: 100%; height: 100%; border: 0;"></iframe>
+  <iframe src="https://convertkit.com<?php echo $data->accessPath ?>" style="width: 100%; height: 100%; border: 0;"></iframe>
 <?php } ?>
 <style>
   body {
