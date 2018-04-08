@@ -1,1 +1,1 @@
-Easily embed email opt in forms from your ConvertKit.com account.
+**This repo is deprecated. Please see [ConvertKit/ConvertKit-WordPress](https://github.com/ConvertKit/ConvertKit-WordPress) for the new repo, or check the [WordPress plugin repository](https://wordpress.org/plugins/convertkit/).**
